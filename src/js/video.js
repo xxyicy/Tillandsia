@@ -3,7 +3,6 @@ var configuration = {
             'url': 'stun:stun.l.google.com:19302'
         }]
     },
-    roomURL = document.getElementById('url'),
     roomNumber = document.getElementById('number'),
     localVideo = document.getElementsByTagName('video')[0],
     remoteVideo = document.getElementsByTagName('video')[1],
@@ -29,7 +28,7 @@ snapAndSendBtn.addEventListener('click', snapAndSend);
 var isInitiator;
 var room = window.location.hash.substring(1);
 if (!room) {
-    room = window.location.hash = randomToken();
+    room = window.location.hash = prompt("Create a room number.");
 }
 
 
@@ -101,7 +100,6 @@ function updateRoomURL(ipaddr) {
     } else {
         url = location.protocol + '//' + ipaddr + ':8080/video.html#' + room
     }
-    roomURL.innerHTML = url;
     roomNumber.innerHTML = room;
 }
 
@@ -119,14 +117,12 @@ function grabWebCamVideo() {
 }
 
 function getMediaSuccessCallback(stream) {
-    console.log('getUserMedia video stream URL:', streamURL);
-
     var streamURL = window.URL.createObjectURL(stream);
+
+    console.log('getUserMedia video stream URL:', streamURL);
     window.stream = stream; // stream available to console
-    if (peerConn)
-        peerConn.add(stream);
-    else 
-        localStream = stream;
+    localStream = stream;
+    peerConn.addStream(stream);
 
     localVideo.src = streamURL;
     show(snapBtn);
